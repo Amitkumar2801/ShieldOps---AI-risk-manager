@@ -5,3 +5,4 @@
 - **[2026-09-04 23:29:57] Commit 06/23**: feat(pdf): add recommended merchant defense action block
 - **[2026-09-04 23:29:59] Commit 07/23**: feat(pdf): add dispute audit trail and compliance verification table
 - **[2026-09-04 23:30:00] Commit 08/23**: feat(pdf): add confidentiality notice and footer flowable
+- **[2026-09-04 23:30:01] Commit 09/23**: feat(backend): add /export-pdf/<entity_id> endpoint with input validation
