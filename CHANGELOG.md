@@ -7,3 +7,4 @@
 - **[2026-09-04 23:30:00] Commit 08/23**: feat(pdf): add confidentiality notice and footer flowable
 - **[2026-09-04 23:30:01] Commit 09/23**: feat(backend): add /export-pdf/<entity_id> endpoint with input validation
 - **[2026-09-04 23:30:02] Commit 10/23**: feat(backend): implement SQLite record retrieval and error handling in export-pdf
+- **[2026-09-04 23:30:03] Commit 11/23**: feat(webhook): configure RAZORPAY_WEBHOOK_SECRET environment loader
