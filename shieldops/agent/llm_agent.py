@@ -152,3 +152,45 @@ Order facts:
         f"Model-predicted risk score at time of order: {order_row.get('risk_score', 0):.0%}."
     )
     return {"evidence_draft": template, "source": "template_fallback"}
+
+
+# ---------------------------------------------------------------------------
+# Use case 3: Interactive Merchant AI Copilot
+# ---------------------------------------------------------------------------
+def answer_copilot_query(query: str, context: dict = None) -> dict:
+    """
+    Provides real-time merchant risk intelligence and decision assistance.
+    """
+    ctx_str = ""
+    if context:
+        ctx_str = f"""
+Current Context Data:
+- Entity ID: {context.get('entity_id', 'General')}
+- Entity Type: {context.get('entity_type', 'N/A')}
+- Risk Score: {context.get('risk_score', 'N/A')}
+- Risk Tier: {context.get('risk_tier', 'N/A')}
+- Cost Impact: Rs. {context.get('estimated_cost_impact', 'N/A')}
+- Recorded Explanation: {context.get('explanation', 'N/A')}
+- Recommended Action: {context.get('recommended_action', 'N/A')}
+"""
+    prompt = f"""You are ShieldOps AI Copilot, an expert fraud risk analyst for e-commerce merchants integrated with Razorpay.
+Answer the merchant's question clearly, professionally, and concisely (2-4 sentences). 
+Provide concrete, actionable advice (e.g. require OTP on delivery, request courier POD, hold dispatch, or dispute via Razorpay portal).
+
+{ctx_str}
+
+Merchant Question: {query}
+"""
+    text = _call_gemini(prompt)
+    if text:
+        return {"answer": text, "source": "llm_generated"}
+
+    # Fallback response if LLM is unavailable
+    tier = context.get('risk_tier', 'medium') if context else 'medium'
+    entity = context.get('entity_id', 'this case') if context else 'this transaction'
+    fallback = (
+        f"Based on risk signals for {entity} (Tier: {tier.upper()}), we recommend placing a temporary hold on high-value dispatches "
+        f"and requesting proof of delivery (POD) or OTP verification from the customer before proceeding."
+    )
+    return {"answer": fallback, "source": "template_fallback"}
+

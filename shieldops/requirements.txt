@@ -4,3 +4,5 @@ numpy==2.4.4
 scikit-learn==1.8.0
 joblib==1.5.3
 requests==2.33.1
+reportlab>=4.0.0
+
