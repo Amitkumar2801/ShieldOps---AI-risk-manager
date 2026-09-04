@@ -11,3 +11,4 @@
 - **[2026-09-04 23:30:05] Commit 12/23**: feat(webhook): implement HMAC-SHA256 signature verification helper
 - **[2026-09-04 23:30:06] Commit 13/23**: feat(webhook): add nested webhook JSON payload extractor
 - **[2026-09-04 23:30:07] Commit 14/23**: feat(webhook): implement live order.paid chargeback risk inference
+- **[2026-09-04 23:30:08] Commit 15/23**: feat(webhook): implement live refund.created return abuse scoring
