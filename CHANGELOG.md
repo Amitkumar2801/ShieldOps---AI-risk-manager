@@ -17,3 +17,4 @@
 - **[2026-09-04 23:30:12] Commit 18/23**: feat(copilot): implement /api/copilot decision support endpoint
 - **[2026-09-04 23:30:14] Commit 19/23**: feat(simulation): add /api/simulate-webhook for real-time testing
 - **[2026-09-04 23:30:15] Commit 20/23**: feat(case-management): implement /api/resolve-case state updater
+- **[2026-09-04 23:30:16] Commit 21/23**: feat(ui): add Razorpay branded header with electric blue badge
