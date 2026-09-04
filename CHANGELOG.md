@@ -1,0 +1,1 @@
+- **[2026-09-04 23:29:54] Commit 02/23**: feat(pdf): configure typography, brand colors, and page template
