@@ -15,3 +15,4 @@
 - **[2026-09-04 23:30:10] Commit 16/23**: feat(webhook): add /razorpay-webhook endpoint with 401 unauthorized handling
 - **[2026-09-04 23:30:11] Commit 17/23**: feat(copilot): add answer_copilot_query assistant in llm_agent
 - **[2026-09-04 23:30:12] Commit 18/23**: feat(copilot): implement /api/copilot decision support endpoint
+- **[2026-09-04 23:30:14] Commit 19/23**: feat(simulation): add /api/simulate-webhook for real-time testing
