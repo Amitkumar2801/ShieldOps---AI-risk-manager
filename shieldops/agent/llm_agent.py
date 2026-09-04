@@ -46,8 +46,8 @@ def _load_api_key():
 
 
 GEMINI_API_KEY = _load_api_key()
-GEMINI_MODEL = "gemini-flash-latest"
-TIMEOUT_SECONDS = 25
+GEMINI_MODEL = "gemini-3.1-flash-lite"
+TIMEOUT_SECONDS = 15
 
 
 def _call_gemini(prompt: str) -> str | None:
