@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ShieldOps — Post-Purchase Risk Dashboard</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, Segoe UI, Roboto, sans-serif; background: #f5f6f8; margin: 0; color: #1a1a1a; }
+  header { background: #16213e; color: white; padding: 20px 32px; }
+  header h1 { margin: 0; font-size: 22px; }
+  header p { margin: 4px 0 0; color: #a9b4d0; font-size: 14px; }
+  .container { padding: 24px 32px; }
+  .cards { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+  .card { background: white; border-radius: 10px; padding: 18px 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); flex: 1; min-width: 180px; }
+  .card .label { font-size: 12px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
+  .card .value { font-size: 26px; font-weight: 600; margin-top: 6px; }
+  .buttons { margin-bottom: 20px; }
+  button { background: #16213e; color: white; border: none; padding: 10px 18px; border-radius: 6px; cursor: pointer; font-size: 14px; margin-right: 10px; }
+  button.secondary { background: #d85a30; }
+  button:hover { opacity: 0.9; }
+  table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  th, td { padding: 12px 14px; text-align: left; font-size: 13px; border-bottom: 1px solid #eee; }
+  th { background: #f0f1f4; font-weight: 600; color: #444; }
+  .tier { padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+  .tier-high { background: #fcebeb; color: #791f1f; }
+  .tier-medium { background: #faeeda; color: #633806; }
+  .tier-low { background: #eaf3de; color: #27500a; }
+  .badge { padding: 2px 8px; border-radius: 8px; font-size: 11px; }
+  .badge-llm { background: #eeedfe; color: #3c3489; }
+  .badge-fallback { background: #e1f5ee; color: #085041; }
+  .explanation { max-width: 380px; font-size: 13px; color: #333; }
+  .type-tag { font-size: 12px; color: #666; }
+  #status { margin-left: 6px; font-size: 13px; color: #666; }
+</style>
+</head>
+<body>
+<header>
+  <h1>ShieldOps</h1>
+  <p>Post-purchase risk & dispute defense agent — return abuse + chargeback early warning</p>
+</header>
+<div class="container">
+
+  <div class="cards">
+    <div class="card"><div class="label">Flagged cases</div><div class="value">{{ total_flagged }}</div></div>
+    <div class="card"><div class="label">Estimated Rs. at risk</div><div class="value">₹{{ "{:,.0f}".format(total_cost_at_risk) }}</div></div>
+    <div class="card"><div class="label">LLM-generated explanations</div><div class="value">{{ llm_count }}</div></div>
+    <div class="card"><div class="label">Fallback (LLM unavailable)</div><div class="value">{{ fallback_count }}</div></div>
+  </div>
+
+  <div class="buttons">
+    <button onclick="runBatch(false)">Run batch scan</button>
+    <button class="secondary" onclick="runBatch(true)">Demo: simulate LLM failure</button>
+    <span id="status"></span>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th><th>Entity</th><th>Risk score</th><th>Tier</th>
+        <th>Explanation</th><th>Source</th><th>Recommended action</th><th>Rs. impact</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in rows %}
+      <tr>
+        <td class="type-tag">{{ "Return abuse" if r.entity_type == "return_abuse" else "Chargeback" }}</td>
+        <td>{{ r.entity_id }}</td>
+        <td>{{ "%.0f" | format(r.risk_score * 100) }}%</td>
+        <td><span class="tier tier-{{ r.risk_tier }}">{{ r.risk_tier }}</span></td>
+        <td class="explanation">{{ r.explanation }}</td>
+        <td><span class="badge {{ 'badge-llm' if r.source == 'llm_generated' else 'badge-fallback' }}">{{ r.source }}</span></td>
+        <td>{{ r.recommended_action }}</td>
+        <td>₹{{ "{:,.0f}".format(r.estimated_cost_impact) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script>
+function runBatch(simulateFailure) {
+  const status = document.getElementById('status');
+  status.textContent = 'Running batch...';
+  fetch(simulateFailure ? '/demo-failure' : '/run-batch', { method: 'POST' })
+    .then(r => r.json())
+    .then(data => {
+      status.textContent = 'Done. Reloading...';
+      setTimeout(() => window.location.reload(), 600);
+    })
+    .catch(err => { status.textContent = 'Error: ' + err; });
+}
+</script>
+</body>
+</html>

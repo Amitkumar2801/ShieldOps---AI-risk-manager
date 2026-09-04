@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+app/audit_trail.db
+.env
+*.log

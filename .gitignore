@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+
+# Environment Variables & Secrets
+.env
+shieldops/.env
+
+# Databases & Logs
+*.db
+*.sqlite3
+*.log
+shieldops/app/audit_trail.db
