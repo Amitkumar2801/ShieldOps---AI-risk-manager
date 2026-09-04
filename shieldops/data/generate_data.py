@@ -189,13 +189,16 @@ for c in customers:
     c["true_return_abuser"] = int(c["archetype"] == "abuser" and return_rate >= 0.4)
 
 # ---------- Step 5: Write CSVs ----------------------------------------------
-with open("/home/claude/shieldops/data/customers.csv", "w", newline="") as f:
+import os
+DATA_DIR = os.path.dirname(os.path.abspath(__file__))
+
+with open(os.path.join(DATA_DIR, "customers.csv"), "w", newline="") as f:
     w = csv.DictWriter(f, fieldnames=["customer_id", "name", "archetype",
                                        "signup_date", "address_id", "true_return_abuser"])
     w.writeheader()
     w.writerows(customers)
 
-with open("/home/claude/shieldops/data/orders.csv", "w", newline="") as f:
+with open(os.path.join(DATA_DIR, "orders.csv"), "w", newline="") as f:
     w = csv.DictWriter(f, fieldnames=list(orders[0].keys()))
     w.writeheader()
     w.writerows(orders)
