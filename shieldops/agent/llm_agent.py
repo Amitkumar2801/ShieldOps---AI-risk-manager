@@ -16,22 +16,55 @@ for the pitch video):
 import os
 import requests
 
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
-GEMINI_MODEL = "gemini-1.5-flash"
-GEMINI_URL = (
-    f"https://generativelanguage.googleapis.com/v1beta/models/"
-    f"{GEMINI_MODEL}:generateContent?key={GEMINI_API_KEY}"
-)
-TIMEOUT_SECONDS = 8
+
+def _load_api_key():
+    """Load API key from environment variable or search in .env files."""
+    key = os.environ.get("GEMINI_API_KEY", "").strip()
+    if key:
+        return key
+
+    # Search for .env files in likely directories
+    candidate_paths = [
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env"),
+        os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".env"),
+        os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), ".env"),
+        os.path.join(os.getcwd(), ".env"),
+    ]
+    for path in candidate_paths:
+        if os.path.exists(path):
+            try:
+                with open(path, "r", encoding="utf-8") as f:
+                    for line in f:
+                        line = line.strip()
+                        if line.startswith("GEMINI_API_KEY="):
+                            parsed_key = line.split("=", 1)[1].strip().strip('"').strip("'")
+                            if parsed_key:
+                                return parsed_key
+            except Exception:
+                pass
+    return ""
+
+
+GEMINI_API_KEY = _load_api_key()
+GEMINI_MODEL = "gemini-flash-latest"
+TIMEOUT_SECONDS = 25
 
 
 def _call_gemini(prompt: str) -> str | None:
     """Returns generated text, or None if anything goes wrong (never raises)."""
-    if not GEMINI_API_KEY:
+    # Use dynamically in case GEMINI_API_KEY was overridden or loaded late
+    active_key = GEMINI_API_KEY or _load_api_key()
+    if not active_key or active_key == "FORCE_INVALID_KEY_FOR_DEMO":
         return None
+
+    url = (
+        f"https://generativelanguage.googleapis.com/v1beta/models/"
+        f"{GEMINI_MODEL}:generateContent?key={active_key}"
+    )
+
     try:
         resp = requests.post(
-            GEMINI_URL,
+            url,
             json={"contents": [{"parts": [{"text": prompt}]}]},
             timeout=TIMEOUT_SECONDS,
         )
